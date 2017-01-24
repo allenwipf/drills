@@ -1,21 +1,27 @@
-def coins(amount)
+function coins(amount){
+    var qCount = 0;
+    var dCount = 0;
+    var nCount = 0;
+    var pCount = 0;
+    
+    
+    qCount = Math.floor(amount / .25);
+     amount = amount % .25;
+     console.log(qCount)
+     
+    dCount = Math.floor(amount / .10);
+     amount = amount % .10;
+     console.log(dCount)
+     
+    nCount = Math.floor(amount / .05);
+     amount = amount % .05;
+     console.log(nCount)
+     
+    pCount = Math.round(amount / .01);
+    console.log(pCount)
+     
+     console.log("You have " + qCount+ " Quarters,"+ dCount +" Dimes,"+nCount+ " Nickels, and "+pCount+ " Pennies.")
+    
+}
 
-   qCount = ((amount / 0.25).floor)
-   amount = (amount % 0.25)
-
-   dCount = ((amount / 0.10).floor)
-   amount = (amount % 0.10)
-
-   nCount = ((amount / 0.05).floor)
-   amount = (amount % 0.05)
-
-   pCount = (amount / 0.01).round
-
-   print "You have #{qCount} quarters, #{dCount} dimes, #{nCount} nickes, and #{pCount} pennies!"
-
-   return amount
-   
-end
-
-
-coins(1.46)
+coins(1.26)
