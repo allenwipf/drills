@@ -1,6 +1,22 @@
 require 'csv'
 require 'pry'
 
+
+
+## cleans a string from money, decimal point
+def scrub(str)
+    scrubstr = str.delete("$").delete(",").delete("\n")
+    return(scrubstr)
+end
+
+
+
+
+
+
+
+
+
 ## spent takes an Category name (a string) and returns amount of total outflow in that Category
 
 def spent(str)  ## str is our category e.g. "Allowance"
@@ -117,6 +133,8 @@ end
  
 
  ## This gives us all of the categories for each person (not the unique categories)
+ 
+
  sArray = []
  pArray = []
 
@@ -134,6 +152,30 @@ CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
 end
 
 
+
+
+
+## WORKS: specific variation of csvUnique : takes an string of an account name (e.g Sonia) and prints name and all its unique accounts
+def csvUniqCatForName(strAcct)
+    catchArray = []
+    CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
+        cleanCategory = scrub(row[3])
+        cleanAcct = scrub(row[0])
+        if cleanAcct == strAcct
+            catchArray.push(cleanCategory)
+        end
+    end
+    uniqCat = catchArray.uniq
+
+    return(uniqCat)
+end
+
+csvUniqCatForName("Sonia")
+
+csvUniqCatForName("Priya")
+
+
+
 ########################################################################
 #         BEGINNING OF MAIN CODE FOR FORMATTING TERMINAL               #
 ########################################################################
@@ -143,7 +185,6 @@ uniqueValuesInColumn("Account").each do |name|
 
 
     
-   if name == "Sonia"
    		
    		puts "--------------"
     	puts "#{name}"
@@ -152,35 +193,17 @@ uniqueValuesInColumn("Account").each do |name|
     	puts "Allowance was #{allowance(name)}"
     	puts "#{name} spent #{eachSpent(name).round(2)}"
     	puts "Balance is #{allowance(name).round(2) - eachSpent(name).round(2)}"
-    	puts "Spent #{perCatSpend("Groceries", name).round(2)} on Groceries"
+
 
 
 		# display all the spend
-		sArray.uniq.each do |cat|
+		csvUniqCatForName(name).each do |cat|
 			if cat != "Allowance"
-		     puts "Spent #{perCatSpend(cat, name).round(2)} on #{cat}          "
+		     puts "Spent -#{perCatSpend(cat, name).round(2)} on #{cat}          "
 		    end
 		end
-		
-		#puts sAllow
 
-		#print sArray
-
-	elsif name == "Priya"
-		
-		puts "--------------"
-    	puts name
-    	puts "--------------"
-
-    	puts "Allowance was #{allowance(name)}"
-    	puts "#{name} spent #{eachSpent(name).round(2)}"
-    	puts "Balance is #{allowance(name) - eachSpent(name)}"
-    	puts "Spent #{perCatSpend("Groceries", name).round(2)} on Groceries"
-
-		puts pArray.uniq
-		#puts pAllow
-		#print pArray
-	end
+	
 end
 
     
