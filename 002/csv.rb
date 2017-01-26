@@ -1,36 +1,6 @@
 require 'csv'
 require 'pry'
 
-
-
-## run spent for Every unique person,(e.g. sonya, priya) run spent for every unique category
-##  for every unique(persons) & for every unique(categories) run spent(category) ==> [an array of arrays]
-
-# def personCatSpent(pplArr,catArr)
-# 	 pplArr.each do |person|
-
-# 		#CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
-
-# 		catArr.each do |category|
-# 			#CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
-# 			spent(catArr[clength])
-# 			clength -=
-
-			
-# 		end
-
-# 		plength -=
-# 	end
-
-# end
-
-##personCatSpent(csvUnique("Account"), csvUnique("Category"))
-
-
-
-
-
-
 ## spent takes an Category name (a string) and returns amount of total outflow in that Category
 
 def spent(str)  ## str is our category e.g. "Allowance"
@@ -49,9 +19,29 @@ num1 = 0
 end
 
 
+def PerCatSpend(str1, str2)  ## Finds Sum of Out Flow for Each Catagories for Each Account
+
+num1 = 0
+
+	CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
+		
+			if row[3].delete("\n") == str1 && row[0].delete("\n") == str2
+				num1 += row["Outflow"].gsub(/[$]/, '').to_f
+			end  
+	end
+
+ 	
+	return(num1)
+
+end
+
+#Allowance("Groceries", "Sonia")
 
 
-def Allowance(str1, str2)  ## spent modificed for Allowance Sum
+
+
+
+def Allowance(str1, str2)  ## Used to Find Allowance. Sums InFlow for Each Account
 
 num1 = 0
 
@@ -111,20 +101,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-##spent("Rent")
-
 ## takes name of header, finds all unique strings within that header row[num], returns an array of those strings
 
 def csvUnique(str)
@@ -141,8 +117,7 @@ end
  
  sArray = []
  pArray = []
- sAllow = []
- pAllow = []
+
 
 CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
 	if row[0].delete("\n") == "Sonia"
@@ -154,12 +129,12 @@ CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
 
 	end
 
-#	if row[0].delete("\n") == "Sonia" && row["Category"] == "Allowance"
-#		sAllow.push(row["Inflow"])
-#	elsif row[0].delete("\n") == "Priya" && row["Category"] == "Allowance"
-#		pAllow.push(row["Inflow"])
-#	end
 end
+
+
+########################################################################
+#         BEGINNING OF MAIN CODE FOR FORMATTING TERMINAL               #
+########################################################################
 
 
 csvUnique("Account").each do |name|
@@ -175,8 +150,10 @@ csvUnique("Account").each do |name|
     	puts "Allowance was #{Allowance("Allowance", name)}"
     	puts "#{name} spent #{eachSpent(name).round(2)}"
     	puts "Balance is #{Allowance("Allowance", name).round(2) - eachSpent(name).round(2)}"
+    	puts "Spent #{PerCatSpend("Groceries", name).round(2)} on Groceries"
+		
 		puts sArray.uniq
-		#puts spent("Groceries")
+		
 		#puts sAllow
 
 		#print sArray
@@ -190,6 +167,7 @@ csvUnique("Account").each do |name|
     	puts "Allowance was #{Allowance("Allowance", name)}"
     	puts "#{name} spent #{eachSpent(name).round(2)}"
     	puts "Balance is #{Allowance("Allowance", name) - eachSpent(name)}"
+    	puts "Spent #{PerCatSpend("Groceries", name).round(2)} on Groceries"
 
 		puts pArray.uniq
 		#puts pAllow
@@ -198,28 +176,3 @@ csvUnique("Account").each do |name|
 end
 
     
-
-## balance function takes a user, all the outflow and inflow, and gives us the total sum for that user
-def balance(str)
-
-# CSV.foreach("/Users/michaelsefranek/Code/drills/002/accounts.csv", {headers: true, return_headers: false}) do |row|
-# puts row["Outflow"]
-
-# CSV.foreach("/Users/michaelsefranek/Code/drills/002/accounts.csv", {headers: true, return_headers: false}) do |row|
-# puts row["Inflow"]
-
-
-	return()
-end
-
-## spent function takes user, category, all the outflow sums in that category
-def spent(str)
-
-return()
-end
-## avg transaction takes user, category, all the outflow avgs in that category
-def avg(str)
-
-	return()
-end
-
