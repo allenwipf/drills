@@ -1,10 +1,11 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby 
 require 'pry'
 first_arg, *the_rest = ARGV
 
 #binding pry
 
 # conditions. checks which function to run
+
 
 if first_arg == "add" then #if add is passed then add questions passed
 
@@ -19,10 +20,11 @@ elsif first_arg.nil? #if no arguement is passed then print each questions
 
 		questions = File.open("questions.txt", "r")
 
+		
 		questions.readlines.each_with_index do |eachLine, idx|
 
-		print eachLine
-
+		print "#{idx +1} #{eachLine}"
+	
  		end
 
 	questions.close
@@ -57,8 +59,8 @@ def removeLine(lineNumber)
 
 		questions.readlines.each_with_index do |eachLine, idx|
 
-			if idx != lineNumber then 
-			 
+			if idx != lineNumber && eachLine.delete("#{idx}\n") != "" #each line has an index and /n ; .delete("#{idx}\n")removes it
+												   		 
 			 newArray += eachLine
 
 			end
