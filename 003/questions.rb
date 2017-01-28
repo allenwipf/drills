@@ -18,14 +18,13 @@ elsif first_arg == "rm" then  #if rm is passed then removed line indicated
 
 elsif first_arg.nil? #if no arguement is passed then print each questions
 
-		questions = File.open("questions.txt", "r")
+	questions = File.open("/Users/Wipf/questions.txt", "r")
 
-		
-		questions.readlines.each_with_index do |eachLine, idx|
+	questions.readlines.each_with_index do |eachLine, idx|
 
-		print "#{idx +1} #{eachLine}"
+	print "#{idx +1}. #{eachLine}"
 	
- 		end
+end
 
 	questions.close
 	lineNumber = 0
@@ -37,7 +36,7 @@ end
 def add(new_question)
 
 
-	questions = File.open("questions.txt", "a")
+	questions = File.open("/Users/Wipf/questions.txt", "a")
 
 	questions.puts new_question
 
@@ -52,19 +51,20 @@ add(new_question)
 def removeLine(lineNumber)
   
 
-  lineNumber = lineNumber - 1
-  newArray =  ""
+	lineNumber = lineNumber - 1
+	newArray =  ""
 
-	questions = File.open("questions.txt", "r+")
+	questions = File.open("/Users/Wipf/questions.txt", "r+")
 
 		questions.readlines.each_with_index do |eachLine, idx|
 
 			if idx != lineNumber && eachLine.delete("#{idx}\n") != "" #each line has an index and /n ; .delete("#{idx}\n")removes it
 												   		 
-			 newArray += eachLine
+			 	newArray += eachLine
 
 			end
  	    end
+
     questions.close
 
  	questions = File.open("questions.txt", "w")
@@ -85,7 +85,7 @@ def readLine(line)
   
   line = line - 1
 
-	questions = File.open("questions.txt", "r")
+	questions = File.open("/Users/Wipf/questions.txt", "r")
 
 		questions.readlines.each_with_index do |eachLine, idx|
 
