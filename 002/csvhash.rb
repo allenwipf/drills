@@ -12,7 +12,6 @@ accounts = {}
 #           {Account {
 #              tally, categories{ 
 #                         {sum, number, average
-# 
 # }
 # }
 
