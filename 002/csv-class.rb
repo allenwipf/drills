@@ -75,7 +75,7 @@ class Account
 	def update_category(current_account, transaction_ammount)
 
 		@categories[current_account].update_balance(transaction_ammount)
-		@categories[current_account].update_number_of_transactions(1)
+		@categories[current_account].update_number_of_transactions
 		@categories[current_account].update_average_tranactions
 
 	end	
@@ -97,12 +97,12 @@ class Category
 
 	def update_balance(transaction_ammount)
 
-		@sum += (@sum + transaction_ammount)
+		@sum = (@sum + transaction_ammount)
 	end
 
-	def update_number_of_transactions(x)
+	def update_number_of_transactions
 
-		@number_of_transactions += x
+		@number_of_transactions += 1
 	end
 
 	def update_average_tranactions

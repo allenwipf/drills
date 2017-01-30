@@ -1,131 +1,139 @@
-name_to_print, *second_arg = ARGV
+require "csv"
 require 'pry'
-require 'csv'
 
+class AccountInfo
+  def set_up_initial_values
+    @tally = 0.00
+    @categories = {}
+  end
+
+  def tally
+  	return @tally 				
+  end
+
+  def update_tally(amount)
+    @tally += amount
+  end
+
+  def add_category(category_name)
+    @categories[category_name] = Category.new
+    @categories[category_name].set_up_initial_values
+  end
+
+  def pretty_tally
+    return @tally.round(2)
+  end
+
+  def already_has_category(category_name)
+    return (@categories[category_name] != nil)
+  end
+
+  def category(category_name)
+    return @categories[category_name]
+  end
+
+  def categories
+    return @categories
+  end
+end
+
+class Category
+  def set_up_initial_values
+    @tally = 0.00
+    @num_transactions = 0
+    @average_transaction_cost = 0.00
+  end
+
+  def tally
+  	return @tally
+  end
+
+  def avr_trans
+  	return @average_transaction_cost
+  end
+
+  def add_transaction(amount)
+    @tally += amount
+    @num_transactions += 1
+    @average_transaction_cost = @tally / @num_transactions
+  end
+
+  def pretty_tally
+    @tally.round(2).to_s.ljust(10)
+  end
+
+  def pretty_avg_transaction
+    @average_transaction_cost.round(2).to_s.ljust(20)
+  end
+end
+
+class Outflow
+  def set_value(number_string_from_csv)
+    @value = number_string_from_csv.gsub(/[,\$]/, "").to_f.round(2)
+  end
+
+  def to_f
+    return @value
+  end
+end
+
+class Inflow
+  def set_value(number_string_from_csv)
+    @value = number_string_from_csv.gsub(/[,\$]/, "").to_f.round(2)
+  end
+
+  def to_f
+    return @value
+  end
+end
 
 accounts = {}
 
-########################################################################
-#                     What My Hash Has to Looks Like                   #
-########################################################################
-
-#           {Account {
-#              tally, categories{ 
-#                         {sum, number, average
-# }
-# }
-
-########################################################################
-#                                 Methods                              #
-########################################################################
-
-# This creates lines and spaces for printing out the spread sheet
-def lineMaker(what_type, num_of, word_length)
-
- (what_type * (num_of - word_length))
-
-end
-
-
-
-
-# This loops through each row of the excel file while reading headers but not returning them
 CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
-    
-    #sets account variable to the column with header equal to "Account" and gets ride of new line
-	account = row["Account"].chomp
+  # Add a key for each account to the accounts Hash.
+  account = row["Account"].chomp
 
+  if !accounts[account]
+    accounts[account] = AccountInfo.new
+    accounts[account].set_up_initial_values
+  end
 
-    # This code creates the account if the account doesn't exist and adds initial values
-	if !accounts[account]
-		accounts[account] =  {
+  # Set the account which is being affected by this iteration.
+  current_account = accounts[account]
 
-		tally: 0.00,
-		categories: {
+  # Clean up outflow and inflow.
+  outflow = Outflow.new
+  outflow.set_value(row["Outflow"])
+  inflow = Inflow.new
+  inflow.set_value(row["Inflow"])
+  
+  transaction_amount = inflow.to_f - outflow.to_f
 
-		}
+  # Keep a tally for current balance of the account.
+  current_account.update_tally(transaction_amount)
 
-	 }
-	end
+  category = row["Category"].chomp
 
+  # Initialize category.
+  if !current_account.already_has_category(category)
+    current_account.add_category(category)
+  end
 
-	# This codes takes the inflow and outflow and turns them into usable data
-	# by replacing the dollar signs with an empty string and turning it into a float
-	outflow = row["Outflow"].gsub(/[^\d\.]/, '').to_f
-	inflow = row["Inflow"].gsub(/[^\d\.]/, '').to_f
-	transaction_ammount = inflow - outflow
-
-
-
-	# sums tally per account
-	current_account = accounts[account]
-	current_account[:tally] += transaction_ammount
-
-
-	# This sets the current Category
-    category = row["Category"].chomp
-
-    if !current_account[:categories][category]
-     	 
-
-     	current_account[:categories][category] = {
-
-         	sum: 0.0,
-         	total_transactions: 0,
-         	average_transactions: 0.0
-
-
-	     }
-    end	
- 
-    #This updates total transactions per account
-    current_category = current_account[:categories][category]
-    current_category[:sum] += transaction_ammount
-    current_category[:total_transactions] += 1
-
-
-    #This gives me the number of transaction on the current account
-    current_category[:average_transactions] = current_category[:sum]/current_category[:total_transactions]
-
+  # Add transaction for that category.
+  current_account.category(category).add_transaction(transaction_amount)
 end
 
-
-
-########################################################################
-#         BEGINNING OF MAIN CODE FOR FORMATTING TERMINAL               #
-########################################################################
-
+#  Display
 
 accounts.each do |name, info|
-
-    
-	# If a name is passed that is contained in the Hash then only that name will be printed. Otherwise will print both
-    if accounts.key?(name_to_print)
-
-    	if name != name_to_print then
-	    next  
-	    end     
-	end
-
-
-   	puts lineMaker("=", 60, 0)
-	puts "Account: #{name}... Balance: $#{(info[:tally]).round(2)}"
-	puts lineMaker("=", 60, 0)
-
-	puts "Category #{lineMaker(" ", 20, 8)} | Total Spent  | Average Transactions"
-	puts "--------------------- | -----------  | ---------------------"
-
-	info[:categories].each do |name, info|
-
-    	puts "#{name}#{lineMaker(" ", 21, name.length)} | $#{(info[:sum].round(2).to_s).ljust(11)} |$#{info[:average_transactions].round(2)}"
-
- 
+  puts "\n"
+  puts "======================================================================"
+  puts "Account: #{name}... Balance: $#{info.pretty_tally}"
+  puts "======================================================================"
+  puts "Category                     | Total Spent | Average Transaction"
+  puts "---------------------------- | ----------- | -------------------------"
+  info.categories.each do |category, c_info|
+    print "#{category.ljust(28)} | $#{c_info.pretty_tally} | $#{c_info.pretty_avg_transaction}\n"
+  end
+  puts "\n"
 end
-  
-    
-end
-
-
-
-
-

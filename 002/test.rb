@@ -1,58 +1,68 @@
-class Game
+require_relative 'csvhash.rb'
+require "pry"
 
 
-	def play
-
-		@p1_score = 0
-		@p2_score = 0
-
-		puts "\nSetting scores to 0 in the beginning:"
-        puts self.inspect
-
-		while (@p1_score < 3) && (@p2_score < 3) do
-
-			p1 = ask_player_for_rps_weapon_choice 
-			p2 = ask_player_for_rps_weapon_choice
-
-			puts winner(p1, p2)
-
-			puts "Score updated:"
-            puts self.inspect
-		end
-
-		 puts "GAME OVER!!!!"
+def test_sums(amount)
+	test1 = AccountInfo.new
+	test1.set_up_initial_values
+	test1.update_tally(amount)
+	if test1.tally == amount
+		puts "Pass"
+	else 
+		puts "Fail"
 	end
-
-
-  #This method ask a player what his weapon of choice is and 
-   # "chomps" the answer
-	def ask_player_for_rps_weapon_choice
-
-		puts "What is your weapon?"
-		gets.chomp.downcase
-
-	end
-
-
-	def winner(p1_choice, p2_choice)
-
-
-		if (p1_choice == "scissors") && (p2_choice == "paper")
-
-			@p1_score += 1
-			return "Player 1 wins!"
-		
-		else
-
-			@p2_score += 1
-			return "Player 2 wins!"
-			
-		end
-    end
 
 end
 
-x = Game.new
-x.play
+test_sums(12.0)
+
+def test_sums2(amount)
+	test2 = Category.new
+	test2.set_up_initial_values
+	test2.add_transaction(amount)
+	if test2.tally == amount
+		puts "Pass"
+	else
+		puts "Fail"
+	end
+end
+
+test_sums2(5.5)
+
+def test_avgs(amt1, amt2, amt3)
+	test3 = Category.new
+	test3.set_up_initial_values
+	test3.add_transaction(amt1)
+	test3.add_transaction(amt2)
+	test3.add_transaction(amt3)
+	if test3.avr_trans == (amt1 + amt2 + amt3) / 3
+		puts "Pass"
+	else
+		puts "Fail"
+	end
+	# binding.pry
+end
+
+test_avgs(6, 4, 8)
 
 
+def test_uniq(cats)
+	test4 = AccountInfo.new
+	test4.set_up_initial_values
+	cats.each do |each|
+		if !test4.already_has_category(each)
+	    	test4.add_category(each)
+	  	end
+    end
+    
+  	if test4.categories.count == cats.uniq.count
+  		puts "Pass"
+  	else
+  		puts "Fail"
+  	end
+  	binding.pry
+end
+
+cats = ["egg", "egg", "dog", "egg"]
+
+test_uniq(cats)
