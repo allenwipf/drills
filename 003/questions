@@ -14,6 +14,8 @@ def add(new_question)
 
 	questions.close
 
+	print "Question '#{new_question}' has been added"
+
 end
 
 # if first_arg == "rm" then this code will open the file and copy each line into a new array unless 
@@ -44,6 +46,20 @@ def removeLine(lineNumber)
 
 	questions.close
 
+	print "Question #{lineNumber + 1} has been removed"
+
+end
+
+def print_questions()
+
+    questions = File.open("/Users/Wipf/questions.txt", "r")
+
+	questions.readlines.each_with_index do |eachLine, idx|
+
+	print "#{idx +1}. #{eachLine}"
+
+	end
+
 end
 
 
@@ -61,15 +77,6 @@ elsif first_arg == "rm" then  #if rm is passed then removed line indicated
 
 elsif first_arg.nil? #if no arguement is passed then print each questions
 
-	questions = File.open("/Users/Wipf/questions.txt", "r")
-
-	questions.readlines.each_with_index do |eachLine, idx|
-
-	print "#{idx +1}. #{eachLine}"
-
-end
-
-	questions.close
-
+	print_questions()
 
 end

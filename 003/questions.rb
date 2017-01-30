@@ -46,8 +46,10 @@ end
 def print(should_print)
 	if file == "yes"
 		questions = File.open("/Users/Wipf/questions.txt", "r")
-		questions.readlines.each_with_index do |eachLine, idx|
-		print "#{idx +1}. #{eachLine}"
+
+			{questions.readlines.each_with_index do |eachLine, idx|
+			print "#{idx +1}. #{eachLine}"}
+			end
 	end
 
 end
@@ -72,5 +74,3 @@ elsif first_arg.nil? #if no arguement is passed then print each questions
 end
 
 	questions.close
-
-end
