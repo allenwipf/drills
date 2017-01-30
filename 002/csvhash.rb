@@ -1,5 +1,7 @@
+name_to_print, *second_arg = ARGV
 require 'pry'
 require 'csv'
+
 
 accounts = {}
 
@@ -7,10 +9,10 @@ accounts = {}
 #                     What My Hash Has to Looks Like                   #
 ########################################################################
 
-#           {Account
-#              tally, categories { 
+#           {Account {
+#              tally, categories{ 
 #                         {sum, number, average
-# }
+# 
 # }
 # }
 
@@ -18,6 +20,7 @@ accounts = {}
 #                                 Methods                              #
 ########################################################################
 
+# This creates lines and spaces for printing out the spread sheet
 def lineMaker(what_type, num_of, word_length)
 
  (what_type * (num_of - word_length))
@@ -59,7 +62,6 @@ CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
 	current_account = accounts[account]
 	current_account[:tally] += transaction_ammount
 
-#binding.pry
 
 	# This sets the current Category
     category = row["Category"].chomp
@@ -84,37 +86,47 @@ CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
 
 
     #This gives me the number of transaction on the current account
-    total_transactions = current_category[:total_transactions] # get total transaction for current account
-    sum_of_transaction = current_category[:sum] # get total sum for account account
-    average_transactions = sum_of_transaction/total_transactions # divide total transaction by account
-    current_category[:average_transactions] = average_transactions # update hash
+    current_category[:average_transactions] = current_category[:sum]/current_category[:total_transactions]
 
-#binding.pry
- 
 end
+
+
 
 ########################################################################
 #         BEGINNING OF MAIN CODE FOR FORMATTING TERMINAL               #
 ########################################################################
 
+
 accounts.each do |name, info|
 
-    puts lineMaker("=", 80, 0)
+    
+	# If a name is passed that is contained in the Hash then only that name will be printed. Otherwise will print both
+    if accounts.key?(name_to_print)
+
+    	if name != name_to_print then
+	    next  
+	    end     
+	end
+
+
+   	puts lineMaker("=", 60, 0)
 	puts "Account: #{name}... Balance: $#{(info[:tally]).round(2)}"
-	puts lineMaker("=", 80, 0)
+	puts lineMaker("=", 60, 0)
 
 	puts "Category #{lineMaker(" ", 20, 8)} | Total Spent  | Average Transactions"
-	puts "--------------------- | -----------  | -----------------------------------------"
+	puts "--------------------- | -----------  | ---------------------"
 
-info[:categories].each do |name, info|
+	info[:categories].each do |name, info|
 
-     puts "#{name}#{lineMaker(" ", 21, name.length)} | #{info[:sum].round(2)} #{lineMaker(" ", 21, name.length)    | "
-     
+    	puts "#{name}#{lineMaker(" ", 21, name.length)} | $#{(info[:sum].round(2).to_s).ljust(11)} |$#{info[:average_transactions].round(2)}"
 
+ 
+end
+  
+    
 end
 
 
-end
 
 
 
