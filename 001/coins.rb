@@ -1,8 +1,9 @@
+require 'pry'
 def coins(amount)
 
    qCount = ((amount / 0.25).floor)
    amount = (amount % 0.25)
-
+binding.pry
    dCount = ((amount / 0.10).floor)
    amount = (amount % 0.10)
 

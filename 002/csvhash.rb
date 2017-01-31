@@ -1,139 +1,110 @@
-require "csv"
+require 'CSV'
 require 'pry'
 
-class AccountInfo
-  def set_up_initial_values
-    @tally = 0.00
-    @categories = {}
-  end
-
-  def tally
-  	return @tally 				
-  end
-
-  def update_tally(amount)
-    @tally += amount
-  end
-
-  def add_category(category_name)
-    @categories[category_name] = Category.new
-    @categories[category_name].set_up_initial_values
-  end
-
-  def pretty_tally
-    return @tally.round(2)
-  end
-
-  def already_has_category(category_name)
-    return (@categories[category_name] != nil)
-  end
-
-  def category(category_name)
-    return @categories[category_name]
-  end
-
-  def categories
-    return @categories
-  end
-end
-
-class Category
-  def set_up_initial_values
-    @tally = 0.00
-    @num_transactions = 0
-    @average_transaction_cost = 0.00
-  end
-
-  def tally
-  	return @tally
-  end
-
-  def avr_trans
-  	return @average_transaction_cost
-  end
-
-  def add_transaction(amount)
-    @tally += amount
-    @num_transactions += 1
-    @average_transaction_cost = @tally / @num_transactions
-  end
-
-  def pretty_tally
-    @tally.round(2).to_s.ljust(10)
-  end
-
-  def pretty_avg_transaction
-    @average_transaction_cost.round(2).to_s.ljust(20)
-  end
-end
-
-class Outflow
-  def set_value(number_string_from_csv)
-    @value = number_string_from_csv.gsub(/[,\$]/, "").to_f.round(2)
-  end
-
-  def to_f
-    return @value
-  end
-end
-
-class Inflow
-  def set_value(number_string_from_csv)
-    @value = number_string_from_csv.gsub(/[,\$]/, "").to_f.round(2)
-  end
-
-  def to_f
-    return @value
-  end
-end
-
 accounts = {}
+filter = ARGV
 
 CSV.foreach("accounts.csv", {headers: true, return_headers: false}) do |row|
-  # Add a key for each account to the accounts Hash.
-  account = row["Account"].chomp
+    account = row["Account"].chomp
 
-  if !accounts[account]
-    accounts[account] = AccountInfo.new
-    accounts[account].set_up_initial_values
-  end
+# CREATES AND TRACKS NEW ACCOUNTS
 
-  # Set the account which is being affected by this iteration.
-  current_account = accounts[account]
+    if !accounts[account]
+      accounts[account] = { :total => 0.0, :category => {}}
+    end
 
-  # Clean up outflow and inflow.
-  outflow = Outflow.new
-  outflow.set_value(row["Outflow"])
-  inflow = Inflow.new
-  inflow.set_value(row["Inflow"])
-  
-  transaction_amount = inflow.to_f - outflow.to_f
+    current_account = accounts[account]
 
-  # Keep a tally for current balance of the account.
-  current_account.update_tally(transaction_amount)
+    current_category = row["Category"].chomp
 
-  category = row["Category"].chomp
+# CREATES ENTRIES FOR TYPES OF TRANSACTIONS
 
-  # Initialize category.
-  if !current_account.already_has_category(category)
-    current_account.add_category(category)
-  end
+    if !accounts[account][:category][current_category]
+      accounts[account][:category][current_category] = { :tally => 0.0, :num_of_transactions => 0, :avg_transaction => 0.0 }
+    end
 
-  # Add transaction for that category.
-  current_account.category(category).add_transaction(transaction_amount)
+# CALCULATES TRANSACTION AMOUNTS AND AVERAGES
+
+  inflow = row["Inflow"].gsub(/[,\$]/, '').to_f.round(2)
+  outflow = row["Outflow"].gsub(/[,\$]/, '').to_f.round(2)
+  amount = inflow - outflow
+
+  current_account[:category][current_category][:tally] += amount
+  current_account[:category][current_category][:num_of_transactions] += 1
+  current_account[:category][current_category][:avg_transaction] = current_account[:category][current_category][:tally] / current_account[:category][current_category][:num_of_transactions]
+
+  # CALCULATES ACCOUNT BALANCE
+
+  current_account[:total] += amount
+
 end
 
-#  Display
+# BUILDS ARRAY TO SORT BY ACCOUNT NAME
 
-accounts.each do |name, info|
-  puts "\n"
-  puts "======================================================================"
-  puts "Account: #{name}... Balance: $#{info.pretty_tally}"
-  puts "======================================================================"
-  puts "Category                     | Total Spent | Average Transaction"
-  puts "---------------------------- | ----------- | -------------------------"
-  info.categories.each do |category, c_info|
-    print "#{category.ljust(28)} | $#{c_info.pretty_tally} | $#{c_info.pretty_avg_transaction}\n"
-  end
-  puts "\n"
+holder = accounts.keys
+
+binding.pry
+
+# FILTERS ACCOUNTS TO BE DISPLAYED
+
+if holder.include?(filter[0].to_s)
+  accounts.delete_if { |key, value| key != filter[0].to_s }
+  # accounts = accounts[ARGV[0].to_s]
 end
+
+# CREATES ASCII DISPLAY
+
+if filter[1].to_s == '' and filter[0] != "html" and filter[0] != "csv" or filter[1] == "ascii"
+  accounts.each do |name, balance|
+    puts "\n"
+    puts "==============================================================="
+    puts "  #{name}:    Balance: \$#{balance[:total].round(2)}"
+    puts "==============================================================="
+    puts "| Category    | Amount  | Average Transaction |"
+    puts "| --------------------- | ------------- | ------------------- |"
+    balance[:category].each do |category, t|
+        print "| #{category.ljust(21)} | \$#{t[:tally].round(2).to_s.ljust(12)} | \$#{t[:avg_transaction].round(2).to_s.ljust(18)} |\n"
+    end
+    puts "\n"
+  end
+end
+
+# CREATES HTML DISPLAY
+
+if filter[0] == "html" or filter[1].to_s == "html"
+  accounts.each do |name, balance|
+    puts "\n"
+    puts "<h1>#{name}</h1>"
+    puts "<p>\$#{balance[:total].round(2)}</p>"
+    puts "<hr>"
+    puts "<table>"
+    puts "  <tr>"
+    puts "    <th>Category</th>"
+    puts "    <th>Amount</th>"
+    puts "    <th>Average Transaction</th>"
+    puts "  </tr>"
+    balance[:category].each do |category, t|
+      puts "  <tr>"
+      puts "    <td>#{category}</td>"
+      puts "    <td>\$#{t[:tally].round(2).to_s}</td>"
+      puts "    <td>\$#{t[:avg_transaction].round(2).to_s}</td>"
+      puts "  </tr>"
+    end
+    puts "</table>"
+    puts "\n"
+  end
+end
+
+# CREATES CSV DISPLAY
+
+if filter[0] == "csv" or filter[1].to_s == "csv"
+  accounts.each do |name, balance|
+    puts "\n"
+    puts "Category,Amount,Averge Transaction"
+    balance[:category].each do |category, t|
+      puts "#{category},\$#{t[:tally].round(2).to_s},\$#{t[:avg_transaction].round(2).to_s}"
+    end
+    puts "\n"
+  end
+end
+

@@ -1,7 +1,19 @@
 #!/usr/bin/env ruby 
 require 'pry'
-first_arg, *the_rest = ARGV
+user_input = ARGV
 
+# if user_input[0] is nil, questions will print
+def print_questions
+
+    questions = File.open("/Users/Wipf/questions.txt", "r")
+
+	questions.readlines.each_with_index do |eachLine, idx|
+
+	print "#{idx +1}. #{eachLine}"
+
+	end
+
+end
  
 # if the first argument == "add" then this code appends the second argument passed to the file
 
@@ -18,7 +30,7 @@ def add(new_question)
 
 end
 
-# if first_arg == "rm" then this code will open the file and copy each line into a new array unless 
+# if user_input[0] == "rm" then this code will open the file and copy each line into a new array unless 
 # it's index matches the number passed by second_arg or is an empty line. That array is then, line 
 # by line printed to the same file after it's erased. 
 
@@ -26,7 +38,7 @@ def removeLine(lineNumber)
   
 
 	lineNumber = lineNumber - 1
-	newArray =  ""
+	newQuestions =  ""
 
 	questions = File.open("/Users/Wipf/questions.txt", "r+")
 
@@ -34,7 +46,7 @@ def removeLine(lineNumber)
 
 			if idx != lineNumber && eachLine.delete("#{idx}\n") != "" #each line has an index and /n ; .delete("#{idx}\n")removes it
 												   		 
-			 	newArray += eachLine
+			 	newQuestions += eachLine
 
 			end
  	    end
@@ -42,41 +54,36 @@ def removeLine(lineNumber)
     questions.close
 
  	questions = File.open("/Users/Wipf/questions.txt", "w")
- 	questions.puts newArray
+ 	questions.puts newQuestions
 
 	questions.close
 
 	print "Question #{lineNumber + 1} has been removed"
 
-end
-
-def print_questions()
-
-    questions = File.open("/Users/Wipf/questions.txt", "r")
-
-	questions.readlines.each_with_index do |eachLine, idx|
-
-	print "#{idx +1}. #{eachLine}"
-
-	end
+	puts 
+	puts
+	puts "Updated questions are:"
+	print_questions
 
 end
 
 
-#If statements that determines which functions run based on first_arg value
 
-if first_arg == "add" then #if add is passed then add questions passed
 
-	new_question = the_rest.join(' ')
+#If statements that determines which functions run based on user_input[0] value
+
+if user_input[0] == "add" then #if add is passed then add questions passed
+
+	new_question = user_input[1].to_s
 	add(new_question)
 
-elsif first_arg == "rm" then  #if rm is passed then removed line indicated
+elsif user_input[0] == "rm" then  #if rm is passed then removed line indicated
 
-	lineNumber = the_rest.join(' ').to_i
+	lineNumber = user_input[1].to_i
 	removeLine(lineNumber)
 
-elsif first_arg.nil? #if no arguement is passed then print each questions
+elsif user_input[0].nil? #if no arguement is passed then print each questions
 
-	print_questions()
+	print_questions
 
 end
