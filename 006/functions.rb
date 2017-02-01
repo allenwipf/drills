@@ -1,5 +1,4 @@
 require "csv"
-require 'pry'
 
 class AccountInfo
   def set_up_initial_values
