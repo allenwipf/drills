@@ -13,28 +13,28 @@ function beginGame(){
 
 	if ((p1_score > 0) || (p2_score > 0)) {
 		console.log()
-		console.log("The score is Player 1: " + p1_score + " and Player 2: " + p2_score);
+		console.log("The score is Player1: " + p1_score + " and Player2: " + p2_score);
 		
 	}
 
 	if (p1_score == 3){
 
- 		console.log("Game Over! Player 1 wins");
+ 		console.log("Game Over! Player1 wins");
 
 	} else if (p2_score == 3){
 
-		console.log("Game Over! Player 2 wins");
+		console.log("Game Over! Player2 wins");
 
 	} else {
 		console.log();
-		console.log("Player 1, please enter a weapon!");
+		console.log("Player1, please enter a weapon!");
 		player1();
 
 	}
 }
 
 
-//This functin gets the result of player 1
+//This functin gets the result of Player1
 function player1(){
 
 	prompt.get(['player1'], function (err, result) {
@@ -43,7 +43,7 @@ function player1(){
 		var choices = ['rock','paper', 'scissors'];
 		if(illegal_words(result.player1)){
 			console.log();
-		    console.log("Player 1, please enter a weapon!");
+		    console.log("Player1, please enter a weapon!");
 		    
 			player2(result.player1);
 
@@ -58,7 +58,7 @@ function player1(){
 	;
 }
 
-//This function gets the result of player 2
+//This function gets the result of Player2
 function player2(results_player1){
 
 	prompt.get(['player2'], function (err, result) {
@@ -88,19 +88,19 @@ function compare(option1, option2) {
 		console.log("It's a Tie! Try again!")
 
 	} else if (option1 == "rock" && option2 == "paper") {
-		console.log("Player 2 Wins!")
+		console.log("Player2 Wins!")
 		p2_score ++;
 
 	} else if (option1 == "scissors" && option2 =="rock") {
-		console.log("Player 2 Wins!")
+		console.log("Player2 Wins!")
 		p2_score ++;
 
 	} else if (option1 == "paper" && option2 =="scissors") {
-		console.log("Player 2 Wins!")
+		console.log("Player2 Wins!")
 		p2_score ++;
 
 	} else {
-		console.log("Player 1 Wins!")
+		console.log("Player1 Wins!")
 		p1_score ++;
 	}
 
