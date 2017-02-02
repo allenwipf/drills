@@ -1,6 +1,10 @@
 require "csv"
 require 'pry'
 
+
+
+
+
 class AccountInfo
   def set_up_initial_values
     @tally = 0.00
@@ -28,6 +32,9 @@ class AccountInfo
         end
     end
   end
+
+
+
 
   def tally
   	return @tally 				
