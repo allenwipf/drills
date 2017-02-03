@@ -1,6 +1,6 @@
 require "pry"
 
-# Begin Main
+
 class Game
 
 	def initialize
@@ -13,8 +13,8 @@ class Game
 	def play
 
 		# loop until any player has 3
-		until @p1_score == 3 || @p1_score == 3
-		# Keep asking for a weapon until each answers a valid answer
+		until (@p1_score == 3) or (@p2_score == 3) do
+		# keep asking for a weapon until each answers a valid answer
             p1_answer = pick_weapon(@p1)
 	 		until quality_control(p1_answer)
 	 			p1_answer = pick_weapon(@p1)
@@ -30,7 +30,7 @@ class Game
 	 		# annouce current score
 	 		annouce_score()
 	 		# declare winner if there is one
-
+	 		declare_winner()
 		end
 	end
 
