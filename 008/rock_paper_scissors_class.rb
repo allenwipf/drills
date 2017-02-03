@@ -41,7 +41,7 @@ class Game
 		if @p1_score >= 3
 			puts
 			puts "Player 1 is the champian!"
-			puts "Player 1 won #{@@p1_score} to #{@p2_score}"
+			puts "Player 1 won #{@p1_score} to #{@p2_score}"
 		elsif @p2_score >= 3
 			puts
 			puts "Player 2 is the champian!"
