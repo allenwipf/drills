@@ -5,7 +5,6 @@ enable :sessions
 
 
 def increment(winner)
- 
 	if winner == "p1"
 		session["p1_total_score"] += 1
 	elsif winner == "p2"
@@ -13,7 +12,8 @@ def increment(winner)
 	end
 end
 
-post("/start"){
+# Clears and Sets different Session vars and resets the game
+post("/start"){ 
 
 	session.clear
 	session["p1_picked"] = "No"
@@ -24,7 +24,7 @@ post("/start"){
 	redirect "/"  
 }
 
-
+# Gets loads the page each time it's refreshed according to vars set by post("/start") and post("/")
 get ("/"){
 
 	@p1_pick = session["p1_pick"]
@@ -40,20 +40,8 @@ get ("/"){
 	erb :play
 }
 
-
-post("player1") {
-
-	if quality_control(params[:p1_pick])
-		session["p1_pick"] = params[:p1_pick]
-    else
-    	 session["p1_pick"] = "false"
-    	 @p1_pick = session["p1_pick"]   	 # binding.pry
-    end
-
-    redirect "/"
-}
-
-
+# Sets the varialbes used by get("/"). The if statement sets variables for get("/") to show and hide specific 
+# boxes depending on game progression. Calls quality_control function to check if player input is allowed.
 post ("/") {
 		
     if (session["show_p1_box"] != "Yes") then
@@ -75,7 +63,9 @@ post ("/") {
     	redirect "/" 
     		
     end
-
+    
+    # Calls different functions to see who won, to tally score according to who won the round 
+    # and to declare an overall winner if max store set by function is reached. 
     session["round_winner"] = round_win(session["p1_pick"], session["p2_pick"])
     session["increment_score"] = tally_score(session["round_winner"])
     increment(session["increment_score"])

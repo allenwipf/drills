@@ -2,14 +2,6 @@ require "pry"
 
 
 
-
-	# def initialize
-	# 	@p1_score = 0
-	# 	@p2_score = 0
-	# 	@p1 = "Player 1"
-	# 	@p2 = "Player 2"
-	# end
-
 	def play
 
 		# loop until any player has 3
@@ -36,7 +28,7 @@ require "pry"
 
  # Begin Functions
 
-	# accounces game if there is one
+	# accounces game winner if there is one
 	def declare_winner()
 		if @p1_score >= 3
 			puts
