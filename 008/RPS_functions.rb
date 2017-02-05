@@ -1,14 +1,14 @@
 require "pry"
 
 
-class Game
 
-	def initialize
-		@p1_score = 0
-		@p2_score = 0
-		@p1 = "Player 1"
-		@p2 = "Player 2"
-	end
+
+	# def initialize
+	# 	@p1_score = 0
+	# 	@p2_score = 0
+	# 	@p1 = "Player 1"
+	# 	@p2 = "Player 2"
+	# end
 
 	def play
 
@@ -49,11 +49,22 @@ class Game
 		end
 	end
 
+	def the_winner(p1_score, p2_score)
+		if p1_score >= 3
+			
+			return "Player 1 is the champian!"
+			
+		elsif p2_score >= 3
+
+			return "Player 2 is the champian!"	
+		end
+	end
+
 	# Prompts player to pick a weapon and saves the results to a variable
 	def pick_weapon(which_player)
-		print "#{which_player}, pick your weapon! "
-		answer = gets.chomp
-		answer = answer.downcase
+		#return "#{which_player}, pick your weapon! "
+		# answer = gets.chomp
+		# answer = answer.downcase
 	end
 
 	# Makes sure the player enter a valid response
@@ -63,12 +74,12 @@ class Game
 			return true
 		elsif answer == "start over"
 			newGame = Game.new
-			puts "Started over. Scores have been reset"
+			# puts "Started over. Scores have been reset"
 			newGame.play
 		elsif answer == "rock" or answer == "scissors" or answer == "paper"
 			return true
 		else
-			puts "What is #{answer}? I'm not sure it's a real word."
+			# puts "What is #{answer}? I'm not sure it's a real word."
 			return false
 		end	
 	end
@@ -76,30 +87,31 @@ class Game
 	# Winner logic. Determines who the winner is.
 	def round_win(p1_answer, p2_answer)
 		if p1_answer == p2_answer
-			puts "It's a tie! Try again!"
-			return "tie"
+			return "It's a tie! Try again!"
 		elsif p1_answer == "rock" and p2_answer == "paper"
-			puts "Player 2 wins this round!"
+			return "Player 2 wins this round!"
 
 		elsif p1_answer == "scissors" and p2_answer == "rock"
-			puts "Player 2 wins this round!"
-
+			return "Player 2 wins this round!"
+		
 		elsif p1_answer == "paper" and p2_answer == "scissors"
-		else 
-			puts "Player 1 wins this round!"
-			return "p1"
+		 	return "Player 2 wins this round!"
+		else
+			return "Player 1 wins this round!"
 		end
 
 	end
 
 	# Depending who won the round, will increment their score
 	def tally_score(winner)
-		if winner == "p1"
-			@p1_score += 1
-		elsif winner == "tie"
+		if winner == "Player 1 wins this round!"
+			# @p1_score += 1
+			return "p1"
+		elsif winner == "It's a tie! Try again!"
 
 		else
-			@p2_score += 1 
+			# @p2_score += 1
+			return "p2"
 		end
 	end 
 
@@ -132,8 +144,6 @@ class Game
 			puts "Player 2 won #{@p2_score} to #{@p1_score}"
 		end
 	end
-end
 
-newGame = Game.new
-newGame.play
+
 
