@@ -3,6 +3,7 @@ body {
     font-family: monospace;
     font-size: 16px;
     margin-left: 40%;
+
 }
 .submit {
     background-color: #FF7E67;
@@ -20,8 +21,9 @@ h3 {
 
 	background-color: #F69D9D;
 	padding: 10px;
-	max-width: 250px;
+	max-width: 260px;
 	border: 1px black solid;
+	text-align: center;
 }
 .not_valid{
 

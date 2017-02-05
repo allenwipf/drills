@@ -10,7 +10,7 @@ class Game
 		@p2 = "Player 2"
 	end
 
-	def play
+	def play (weapon1, weapon2)
 
 		# loop until any player has 3
 		until (@p1_score == 3) or (@p2_score == 3) do

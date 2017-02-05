@@ -1,18 +1,30 @@
 require "sinatra"
 require "pry"
-require_relative './RPS_functions.rb'
+require_relative './functions.rb'
 enable :sessions
 
 
-def increment(winner)
-	if winner == "p1"
-		session["p1_total_score"] += 1
-	elsif winner == "p2"
-		session["p2_total_score"] += 1
-	end
+
+# Calls different functions to see who won the round, tallys the appropriate scores
+# and to declares an overall winner if max store set by function is reached. 
+#
+# Functions Called
+# 	round_win(p1_answer, p2_answer)
+# 	tally_score(winner) 
+# 	the_winner(p1_score, p2_score)
+# 
+# Please see fuctions page to see description of each of these fuctions
+#
+# There is no Return for this function
+def process_picks()
+
+	session["round_winner"] = round_win(session["p1_pick"], session["p2_pick"])
+    session["increment_score"] = tally_score(session["round_winner"])
+    session["game_winner"] = the_winner(session["p1_total_score"],session["p2_total_score"])
+
 end
 
-# Clears and Sets different Session vars and resets the game
+# Post Controller Clears and Sets different Session vars and resets the game
 post("/start"){ 
 
 	session.clear
@@ -23,7 +35,6 @@ post("/start"){
 	erb :play
 	redirect "/"  
 }
-
 # Gets loads the page each time it's refreshed according to vars set by post("/start") and post("/")
 get ("/"){
 
@@ -36,10 +47,8 @@ get ("/"){
 	session["p2_total_score"]
 	@current_score = session["game_winner"]
 
-	
 	erb :play
 }
-
 # Sets the varialbes used by get("/"). The if statement sets variables for get("/") to show and hide specific 
 # boxes depending on game progression. Calls quality_control function to check if player input is allowed.
 post ("/") {
@@ -60,15 +69,14 @@ post ("/") {
 		redirect "/"
 	else          
 		session["p1_pick"] = "try_again" 
-    	redirect "/" 
-    		
+    	redirect "/" 		
     end
     
-    # Calls different functions to see who won, to tally score according to who won the round 
-    # and to declare an overall winner if max store set by function is reached. 
-    session["round_winner"] = round_win(session["p1_pick"], session["p2_pick"])
-    session["increment_score"] = tally_score(session["round_winner"])
-    increment(session["increment_score"])
-    session["game_winner"] = the_winner(session["p1_total_score"],session["p2_total_score"])
+  	process_picks()
     redirect "/"  
 }
+
+
+
+
+

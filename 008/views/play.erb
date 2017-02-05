@@ -46,7 +46,7 @@ not hidden according to game progression -->
 <% else %>
 	<h3> <%= @round_winner %> </h3>
 <% end %> 
-<!--  anncounces overall game winnder at end of game  -->
+<!--  anncounces overall game winnder at end of game -->
 <div id="declare_winner" <%= if(@current_score.nil?) then ('hidden') end %>>
 	<%= session["game_winner"] %>
 </div>	
