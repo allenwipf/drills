@@ -1,11 +1,11 @@
+// Waits for hte window to load before running functions. 
 window.addEventListener("load", function(){
 
     getInfo()
-
 });
 
 
-
+// AJAX request. returns as JSON data
 function getInfo(){
 
     var getRequest = new XMLHttpRequest();
@@ -18,25 +18,20 @@ function getInfo(){
         renderHTML(ourData)
     };
     getRequest.send();
-
 }
 
-
+// Takes the JSON from getInfo() and parses the text as HTML and inserts the node into DOM at specified location
 function renderHTML(rawData){
 
+    for (x = 0; x <= rawData.length - 1; x++) {
 
-    for (x = 0; x <= rawData.length; x++) {
-
-        htmlString = "<p class='name'>" + rawData[x].fname + " " + rawData[x].lname + "<br>" +
+        htmlString = "<div class='name'>" + "<strong>" + rawData[x].fname + " " + rawData[x].lname + "</strong>" + "<br>" +
             rawData[x].tel + "<br>" +
             rawData[x].address + "<br>" +
             rawData[x].city + "<br>" +
-            rawData[x].state + "<br>" +
-            rawData[x].zip + "<br>"
+            rawData[x].state + " " +
+            rawData[x].zip + "<br>" + "<br>" + "</div>"
 
         document.getElementsByTagName("body")[0].insertAdjacentHTML("beforeend", htmlString) 
-
-    }
-    console.log(rawData)
-    
+    }    
 }
